@@ -1,6 +1,6 @@
 ## Quick start
 
-- [Download from Github]() or clone the repo: 
+- [Download from Github](https://github.com/SarangLakade123/newddproject.git) or clone the repo: 
 
 - Make sure your NodeJS and npm versions are up to date for `React 16.8.6`
 

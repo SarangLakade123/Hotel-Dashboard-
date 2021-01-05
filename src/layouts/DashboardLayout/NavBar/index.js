@@ -19,9 +19,11 @@ import {
   Lock as LockIcon,
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
+  ShoppingCart as ShoppingCartIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  DollarSign as CurrencyIcon
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -46,6 +48,16 @@ const items = [
     href: '/app/products',
     icon: ShoppingBagIcon,
     title: 'Dishes'
+  },
+  {
+    href: '/app/orders',
+    icon: ShoppingCartIcon,
+    title: 'Orders'
+  },
+  {
+    href: '/app/payment',
+    icon: CurrencyIcon,
+    title: 'Payment'
   },
   {
     href: '/app/account',
@@ -101,42 +113,25 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const content = (
-    <Box
-      height="100%"
-      display="flex"
-      flexDirection="column"
-    >
-      <Box
-        alignItems="center"
-        display="flex"
-        flexDirection="column"
-        p={2}
-      >
+    <Box height="100%" display="flex" flexDirection="column">
+      <Box alignItems="center" display="flex" flexDirection="column" p={2}>
         <Avatar
           className={classes.avatar}
           component={RouterLink}
           src={user.avatar}
           to="/app/account"
         />
-        <Typography
-          className={classes.name}
-          color="textPrimary"
-          variant="h5"
-        >
+        <Typography className={classes.name} color="textPrimary" variant="h5">
           {user.name}
         </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-         <Rating name="read-only" value= {user.rating} size='small' readOnly />
-         
+        <Typography color="textSecondary" variant="body2">
+          <Rating name="read-only" value={user.rating} size="small" readOnly />
         </Typography>
       </Box>
       <Divider />
       <Box p={2}>
         <List>
-          {items.map((item) => (
+          {items.map(item => (
             <NavItem
               href={item.href}
               key={item.title}
@@ -147,7 +142,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         </List>
       </Box>
       <Box flexGrow={1} />
-
     </Box>
   );
 

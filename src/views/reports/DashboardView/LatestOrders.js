@@ -26,7 +26,6 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-
 const data = [
   {
     id: uuid(),
@@ -102,15 +101,15 @@ const data = [
   }
 ];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   actions: {
     justifyContent: 'flex-end'
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-  },
+    minWidth: 120
+  }
 }));
 
 const LatestOrders = ({ className, ...rest }) => {
@@ -119,15 +118,12 @@ const LatestOrders = ({ className, ...rest }) => {
 
   const [status, setStatus] = React.useState('');
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setStatus(event.target.value);
   };
 
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <Card className={clsx(classes.root, className)} {...rest}>
       <CardHeader title="Latest Orders" />
       <Divider />
       <PerfectScrollbar>
@@ -135,58 +131,35 @@ const LatestOrders = ({ className, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
-                  Order Ref
-                </TableCell>
-                <TableCell>
-                  Customer
-                </TableCell>
+                <TableCell>Order Ref</TableCell>
+                <TableCell>Customer</TableCell>
                 <TableCell sortDirection="desc">
-                  <Tooltip
-                    enterDelay={300}
-                    title="Sort"
-                  >
-                    <TableSortLabel
-                      active
-                      direction="desc"
-                    >
+                  <Tooltip enterDelay={300} title="Sort">
+                    <TableSortLabel active direction="desc">
                       Date
                     </TableSortLabel>
                   </Tooltip>
                 </TableCell>
-                <TableCell>
-                  Time
-                </TableCell>
-                <TableCell>
-                  Status
-                </TableCell>
-                <TableCell>
-                  Price
-                </TableCell>
+                <TableCell>Time</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Price</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {orders.map((order) => (
-                <TableRow
-                  hover
-                  key={order.id}
-                >
-                  <TableCell>
-                    {order.ref}
-                  </TableCell>
-                  <TableCell>
-                    {order.customer.name}
-                  </TableCell>
+              {orders.map(order => (
+                <TableRow hover key={order.id}>
+                  <TableCell>{order.ref}</TableCell>
+                  <TableCell>{order.customer.name}</TableCell>
                   <TableCell>
                     {moment(order.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
-                  <TableCell>
-                    {order.time}
-                  </TableCell>
+                  <TableCell>{order.time}</TableCell>
                   <TableCell>
                     <FormControl className={classes.formControl}>
-                      <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                      <InputLabel id="demo-simple-select-label">
+                        Status
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -199,20 +172,14 @@ const LatestOrders = ({ className, ...rest }) => {
                       </Select>
                     </FormControl>
                   </TableCell>
-                  <TableCell>
-                    {order.price} /-
-                  </TableCell>
+                  <TableCell>{order.price} /-</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </Box>
       </PerfectScrollbar>
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        p={2}
-      >
+      <Box display="flex" justifyContent="flex-end" p={2}>
         <Button
           color="primary"
           endIcon={<ArrowRightIcon />}

@@ -9,7 +9,6 @@ import {
   Button,
   Card,
   CardHeader,
-  Chip,
   Divider,
   Table,
   TableBody,
@@ -22,9 +21,35 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
-  Select
+  Select,
+  Grid,
+  Paper,
+  ListItemIcon,
+  ListItemText,
+  Fab,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Slide,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Typography
 } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+// import Toolbar from './Toolbar';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import MenuIcon from '@material-ui/icons/Menu';
+import Menu from '@material-ui/core/Menu';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+// import InvoiceTable from './InvoiceTable';
 
 const data = [
   {
@@ -101,6 +126,37 @@ const data = [
   }
 ];
 
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5'
+  }
+})(props => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center'
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center'
+    }}
+    {...props}
+  />
+));
+
+const StyledMenuItem = withStyles(theme => ({
+  root: {
+    '&:focus': {
+      backgroundColor: theme.palette.primary.main,
+      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+        color: theme.palette.common.white
+      }
+    }
+  }
+}))(MenuItem);
+
 const useStyles = makeStyles(theme => ({
   root: {},
   actions: {
@@ -109,14 +165,55 @@ const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120
+  },
+  cardRoot: {
+    maxWidth: 150,
+    marginTop: 10,
+    elevation: 3
+  },
+  cardMedia: {
+    height: 60
+  },
+  paper: {
+    height: 500
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  },
+  floatingIcon: {
+    position: 'absolute',
+    right: '35%',
+    bottom: 70
   }
 }));
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const LatestOrders = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const [orders] = useState(data);
 
   const [status, setStatus] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClickClose = () => {
+    setOpen(false);
+  };
 
   const handleChange = event => {
     setStatus(event.target.value);
@@ -125,6 +222,407 @@ const LatestOrders = ({ className, ...rest }) => {
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardHeader title="Latest Orders" />
+
+      <Tooltip title="Open Dialog">
+        <IconButton aria-label="delete" onClick={handleClickOpen}>
+          <AddToPhotosIcon />
+        </IconButton>
+      </Tooltip>
+
+      <Dialog
+        fullWidth
+        maxWidth={'lg'}
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClickClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          {'Build a Invoice Here!'}
+        </DialogTitle>
+        <DialogContent>
+          <Grid container spacing={1}>
+            <Grid item sm={12} md={8} lg={8}>
+              <Paper elevation={3}>
+                {/* <Toolbar /> */}
+              </Paper>
+              <Typography
+                gutterBottom
+                style={{ marginTop: 15 }}
+                variant="h5"
+                component="h2"
+              >
+                Main Course
+              </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={6} md={2} sm={4}>
+                  {' '}
+                  <Paper className={classes.cardRoot} elevation={5}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Veg Sandwich
+                      </Typography>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image="https://vaya.in/recipes/wp-content/uploads/2018/06/Club-sandwich.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardContent>
+                    <Divider />
+                    <CardActions
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="medium"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography>1</Typography>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="large"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Paper>
+                </Grid>
+                <Grid item xs={6} md={2} sm={4}>
+                  <Paper className={classes.cardRoot} elevation={5}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Veg Sandwich
+                      </Typography>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image="https://vaya.in/recipes/wp-content/uploads/2018/06/Club-sandwich.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardContent>
+                    <Divider />
+                    <CardActions
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="medium"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography>1</Typography>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="large"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Paper>
+                </Grid>{' '}
+                <Grid item xs={6} md={2} sm={4}>
+                  <Paper className={classes.cardRoot} elevation={5}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Veg Sandwich
+                      </Typography>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image="https://vaya.in/recipes/wp-content/uploads/2018/06/Club-sandwich.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardContent>
+                    <Divider />
+                    <CardActions
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="medium"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography>1</Typography>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="large"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Paper>
+                </Grid>{' '}
+                <Grid item xs={6} md={2} sm={4}>
+                  <Paper className={classes.cardRoot} elevation={5}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Veg Sandwich
+                      </Typography>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image="https://vaya.in/recipes/wp-content/uploads/2018/06/Club-sandwich.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardContent>
+                    <Divider />
+                    <CardActions
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="medium"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography>1</Typography>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="large"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Paper>
+                </Grid>
+                <Grid item xs={6} md={2} sm={4}>
+                  <Paper className={classes.cardRoot} elevation={5}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Veg Sandwich
+                      </Typography>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image="https://vaya.in/recipes/wp-content/uploads/2018/06/Club-sandwich.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardContent>
+                    <Divider />
+                    <CardActions
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="medium"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography>1</Typography>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="large"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Paper>
+                </Grid>
+                <Grid item xs={6} md={2} sm={4}>
+                  <Paper className={classes.cardRoot} elevation={5}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Veg Sandwich
+                      </Typography>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image="https://vaya.in/recipes/wp-content/uploads/2018/06/Club-sandwich.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardContent>
+                    <Divider />
+                    <CardActions
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="medium"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography>1</Typography>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="large"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={2} sm={12}>
+                  <Paper className={classes.cardRoot} elevation={5}>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="h2">
+                        Veg Sandwich
+                      </Typography>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image="https://vaya.in/recipes/wp-content/uploads/2018/06/Club-sandwich.jpg"
+                        title="Contemplative Reptile"
+                      />
+                    </CardContent>
+                    <Divider />
+                    <CardActions
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="medium"
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+                      <Typography>1</Typography>
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        size="large"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Paper>
+                </Grid>
+              </Grid>
+
+              <Fab
+                size="medium"
+                variant="extended"
+                color="primary"
+                onClick={handleClick}
+                className={classes.floatingIcon}
+              >
+                <MenuIcon
+                  color="secoundary"
+                  fontSize="medium"
+                  className={classes.extendedIcon}
+                />
+                Menu
+              </Fab>
+              <StyledMenu
+                id="customized-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <FavoriteBorderIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Most Liked" />
+                </StyledMenuItem>
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <FavoriteBorderIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Most Liked" />
+                </StyledMenuItem>
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <FavoriteBorderIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Most Liked" />
+                </StyledMenuItem>
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <FavoriteBorderIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Most Liked" />
+                </StyledMenuItem>
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <FavoriteBorderIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Most Liked" />
+                </StyledMenuItem>
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <ArrowUpwardIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Ascending" />
+                </StyledMenuItem>
+                <StyledMenuItem>
+                  <ListItemIcon>
+                    <ArrowDownwardIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Descending" />
+                </StyledMenuItem>
+              </StyledMenu>
+            </Grid>
+            <Grid item sm={1} md={4} lg={4}>
+              <Paper className={classes.paper} elevation={5}>
+                {/* <InvoiceTable /> */}
+              </Paper>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Disagree
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Divider />
       <PerfectScrollbar>
         <Box minWidth={800}>

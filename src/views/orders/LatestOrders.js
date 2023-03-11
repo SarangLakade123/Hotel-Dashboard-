@@ -31,6 +31,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import OrderInfoDialog from './OrderInfoDialog';
 
 const useRowStyles = makeStyles({
   root: {
@@ -45,7 +47,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const StyledTableCell = withStyles(theme => ({
   head: {
-    backgroundColor: ' #3F51B5',
+    backgroundColor: '#e84e4e',
     color: theme.palette.common.white
   },
   body: {
@@ -81,20 +83,18 @@ function createData(refId, name, tableId, transId, date, time, price) {
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
+  const openInfoDialog = () => {
+    setOpen(true);
+  };
+
+  const CloseInfoDialog = () => {
+    setOpen(false);
+  };
   const classes = useRowStyles();
 
   return (
     <React.Fragment>
-      <StyledTableRow className={classes.root}>
-        <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
+      <StyledTableRow className={classes.root} onClick={openInfoDialog}>
         <TableCell component="th" scope="row">
           {row.refId}
         </TableCell>
@@ -106,34 +106,17 @@ function Row(props) {
         <StyledTableCell align="center">{row.price}$</StyledTableCell>
       </StyledTableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center">Dishes</TableCell>
-                    <TableCell align="center">Quantity</TableCell>
-                    <TableCell align="center">Price</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map(historyRow => (
-                    <TableRow key={historyRow.dishName}>
-                      <TableCell component="th" scope="row" align="center">
-                        {historyRow.dishName}
-                      </TableCell>
-                      <TableCell align="center">
-                        {historyRow.quantity}
-                      </TableCell>
-                      <TableCell align="center">{historyRow.price}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
+        <OrderInfoDialog
+          open={open}
+          cancelClicked={() => {
+            CloseInfoDialog();
+          }}
+        />
+
+        <TableCell
+          style={{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan={8}
+        ></TableCell>
       </TableRow>
     </React.Fragment>
   );
@@ -160,23 +143,31 @@ Row.propTypes = {
 };
 
 const rows = [
-  createData(1, 'Frozen yoghurt', 'ac432ac', 159, '3/7/2020', '24:43', 450),
+  createData(
+    1,
+    'Frozen yoghurt',
+    'ac432ac',
+    159,
+    '3/7/2020',
+    'Credit Card',
+    450
+  ),
   createData(
     2,
     'Ice cream sandwich',
     'ac432ac',
     237,
     '31/2/2020',
-    '37:42',
+    'Online',
     499
   ),
-  createData(3, 'Eclair', 'ac432ac', 262, '4/4/2020', '24:43', 379),
-  createData(4, 'Cupcake', 'ac432ac', 305, '5/8/2020', '67:32', 285),
-  createData(5, 'Gingerbread', 'ac432ac', 356, '2/3/2020', '23:49', 195),
-  createData(6, 'Ice cream sandwich', 'ac432ac', 237, '1/3/2020', '37:34', 499),
-  createData(7, 'Eclair', 'ac432ac', 262, '1/6/2020', '24:12', 379),
-  createData(8, 'Cupcake', 'ac432ac', 305, '32/2/2020', '67:01', 265),
-  createData(9, 'Gingerbread', 'ac432ac', 356, '12/32/2020', '01:05', 195)
+  createData(3, 'Eclair', 'ac432ac', 262, '4/4/2020', 'Cash', 379),
+  createData(4, 'Cupcake', 'ac432ac', 305, '5/8/2020', 'Check', 285),
+  createData(5, 'Gingerbread', 'ac432ac', 356, '2/3/2020', 'Online', 195),
+  createData(6, 'Ice cream sandwich', 'ac432ac', 237, '1/3/2020', 'Cash', 499),
+  createData(7, 'Eclair', 'ac432ac', 262, '1/6/2020', 'Debit Card', 379),
+  createData(8, 'Cupcake', 'ac432ac', 305, '32/2/2020', 'Check', 265),
+  createData(9, 'Gingerbread', 'ac432ac', 356, '12/32/2020', 'Online', 195)
 ];
 
 const useToolbarStyles = makeStyles(theme => ({
@@ -203,11 +194,11 @@ export default function CollapsibleTable() {
   const classes = useToolbarStyles();
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpenFilter = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleCloseFilter = () => {
     setOpen(false);
   };
 
@@ -240,7 +231,10 @@ export default function CollapsibleTable() {
           </FormControl>
 
           <Tooltip title="Filter list">
-            <IconButton aria-label="filter list" onClick={handleClickOpen}>
+            <IconButton
+              aria-label="filter list"
+              onClick={handleClickOpenFilter}
+            >
               <FilterListIcon />
             </IconButton>
           </Tooltip>
@@ -250,7 +244,7 @@ export default function CollapsibleTable() {
           open={open}
           TransitionComponent={Transition}
           keepMounted
-          onClose={handleClose}
+          onClose={handleCloseFilter}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
@@ -278,10 +272,10 @@ export default function CollapsibleTable() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleCloseFilter} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleCloseFilter} color="primary">
               Sort
             </Button>
           </DialogActions>
@@ -292,13 +286,12 @@ export default function CollapsibleTable() {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <StyledTableCell />
               <StyledTableCell>Ref id</StyledTableCell>
               <StyledTableCell>Customer Name</StyledTableCell>
               <StyledTableCell align="center">Table Id</StyledTableCell>
               <StyledTableCell align="center">Transaction Id</StyledTableCell>
               <StyledTableCell align="center">Date</StyledTableCell>
-              <StyledTableCell align="center">Time</StyledTableCell>
+              <StyledTableCell align="center">Mode Of Payment</StyledTableCell>
               <StyledTableCell align="center">Total Price</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -309,6 +302,7 @@ export default function CollapsibleTable() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Divider />
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"

@@ -4,17 +4,26 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
   AppBar,
-  Badge,
   Box,
   Hidden,
   IconButton,
   Toolbar,
-  makeStyles
+  makeStyles,
+  Divider
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
 import Logo from 'src/components/Logo';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
+import SettingsIcon from '@material-ui/icons/Settings';
+import { withStyles } from '@material-ui/core/styles';
+import PersonIcon from '@material-ui/icons/Person';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
+import PrintIcon from '@material-ui/icons/Print';
+import { Printer, Settings, Users, User, LogOut } from 'react-feather';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -23,49 +32,103 @@ const useStyles = makeStyles(() => ({
     height: 60
   }
 }));
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5'
+  }
+})(props => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center'
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center'
+    }}
+    {...props}
+  />
+));
 
-const TopBar = ({
-  className,
-  onMobileNavOpen,
-  ...rest
-}) => {
+const StyledMenuItem = withStyles(theme => ({
+  root: {
+    '&:focus': {
+      backgroundColor: theme.palette.primary.main,
+      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+        color: theme.palette.common.white
+      }
+    }
+  }
+}))(MenuItem);
+
+const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
-  const [notifications] = useState([]);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
-    <AppBar
-      className={clsx(classes.root, className)}
-      elevation={0}
-      {...rest}
-    >
+    <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
       <Toolbar>
         <RouterLink to="/">
           <Logo />
         </RouterLink>
         <Box flexGrow={1} />
-        {/* <Hidden mdDown>
-          <IconButton color="inherit">
-            <Badge
-              badgeContent={notifications.length}
-              color="primary"
-              variant="dot"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <IconButton color="inherit">
-            <InputIcon />
-          </IconButton>
-        </Hidden> */}
+        <IconButton color="inherit">
+          <Printer fontSize="large" />
+        </IconButton>
+
+        <IconButton color="inherit" onClick={handleClick}>
+          <Users fontSize="large" />
+        </IconButton>
+
+        <StyledMenu
+          id="customized-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <RouterLink to="/app/account">
+            <StyledMenuItem>
+              <ListItemIcon>
+                <User fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Profile" style={{ color: '#757575' }} />
+            </StyledMenuItem>
+          </RouterLink>
+          <RouterLink to="/app/settings">
+            <StyledMenuItem>
+              <ListItemIcon>
+                <Settings fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Setting" style={{ color: '#757575' }} />
+            </StyledMenuItem>
+          </RouterLink>
+          <RouterLink to="/app/account">
+            <StyledMenuItem>
+              <ListItemIcon>
+                <LogOut fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Log Out" style={{ color: '#757575' }} />
+            </StyledMenuItem>
+          </RouterLink>
+        </StyledMenu>
         <Hidden lgUp>
-          <IconButton
-            color="inherit"
-            onClick={onMobileNavOpen}
-          >
+          <IconButton color="inherit" onClick={onMobileNavOpen}>
             <MenuIcon />
           </IconButton>
         </Hidden>
       </Toolbar>
+      <Divider />
     </AppBar>
   );
 };
